@@ -1,5 +1,28 @@
 		GIT
 
-	git --version (for checking download) 
-	create account on github.com
+git --version (for checking download) 
+	
+create account on github.com
+
+---------------------------------
+step 0 ; Credential manager check - window credential
+
+step 0 --	git config user.name "princegautam9436-oss"
+	git config user.email "princegautam9436@gmail.com"
+
+-------------------------------------------------------------
+step 1 
+-----
+	git init    (for initialize git)
+
+step 2
+------
+	git add .   (for adding temporarily)
+
+step 3
+---------
+	 go to git hub
+	create new repository
+	copy and execute in vscode
+ 	
 	
