@@ -1,0 +1,5 @@
+		GIT
+
+	git --version (for checking download) 
+	create account on github.com
+	

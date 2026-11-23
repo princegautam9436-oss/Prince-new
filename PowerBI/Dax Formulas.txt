@@ -1,0 +1,198 @@
+	all function is used for applying on full list ,even after using slicer
+
+	All Hotel Amount = CALCULATE(
+	SUM(table_orders[Bill_amt]),
+	ALL(table_orders[HotelName])
+	 )
+
+	
+	for revenue %
+	Revenue % by Hotels = DIVIDE([Total Amount],[All Hotel Amount],0) 
+
+
+	All Hotel Amount 2 = CALCULATE(SUM(table_orders[Bill_amt]),ALL(table_orders) )
+
+	Count Delivered = CALCULATE(COUNT(table_orders[OrderID]),table_orders[DeliveryStatus] = "Delivered")
+
+	Count deliverd > avg = CALCULATE(COUNT(table_orders[OrderID]),table_orders[DeliveryStatus]="Delivered",table_orders[Bill_amt]>AVERAGE(table_orders[Bill_amt]))
+
+	Order Value 2 = CALCULATE(SUM(table_orders[Bill_amt]),ALLEXCEPT(table_orders,table_orders[HotelName],table_orders[payment_method])) 
+
+
+
+
+	FOR NEW COLUMN
+
+		Comm = SWITCH(table_deliverypartner[Name],
+    "Urmila Patwar",0.05,
+    "Akash Avatar",0.08,
+    "Peter",0.10,
+    0
+)
+
+
+
+		NEW COLUMN IN ORDER FOR APPLYING IN ALL
+
+		DeliveryComm = CALCULATE( 
+    MAX(table_deliverypartner[Comm]),
+    RELATEDTABLE(table_deliverypartner))
+
+	
+	CommAmount = table_orders[DeliveryComm]*table_orders[Bill_amt]
+
+	CommAmount = if(table_orders[DeliveryStatus]="Delivered",table_orders[DeliveryComm]*table_orders[Bill_amt],0)
+
+	
+
+
+		FOR VARIABLES
+
+	CommAmount1 = 
+    var x = CALCULATE(MAX(table_deliverypartner[Comm]),
+    RELATEDTABLE(table_deliverypartner))
+
+    RETURN IF(table_orders[DeliveryStatus] = "Delivered", 
+    x*table_orders[Bill_amt])
+
+
+
+	fiscal_year = ALLNOBLANKROW(dim_date[fiscal_year])
+
+
+
+
+	post_disc_amt = 
+    var x = CALCULATE(
+    MAX(post_invoice_deductions[discounts_pct]),
+    RELATEDTABLE(post_invoice_deductions)
+    )
+
+    RETURN x * [pre_sales_invoice-amount]
+
+
+	Post_other_disc_amt = 
+    var x = CALCULATE(
+    MAX(post_invoice_deductions[other_deductions_pct]),
+    RELATEDTABLE(post_invoice_deductions)
+    )
+
+    RETURN x * [pre_sales_invoice-amount]
+
+
+
+	frieght_amt = 
+    var x = CALCULATE(
+    MAX(freight_cost[freight_pct]),
+    RELATEDTABLE(freight_cost)
+)
+RETURN
+x * [pre_sales_invoice-amount]
+
+
+
+
+	manufacturing_amt = 
+    var x = CALCULATE(
+    MAX(manufacturing_cost[manufacturing_cost]),
+    RELATEDTABLE(manufacturing_cost)
+)
+RETURN
+x * [quantity]
+
+
+
+	cogs = 
+    [frieght_amt] + [freight_other_amt] + [manufacturing_amt]
+
+
+
+		NIS SURAT = CALCULATE(
+    SUM(sales_cast[pre_invoice_sales_amount]),dim_market[market] = "Surat"
+	)
+
+
+			total_customers = COUNTA(dim_customer[customer])
+
+
+
+		
+	
+	
+		NIS SURAT = CALCULATE([NIS],
+    REMOVEFILTERS(dim_customer[market]),
+    REMOVEFILTERS(dim_market[market]),
+    dim_customer[market]="Surat"
+    )
+
+
+
+		gross_sales = SUM(sales_cast[sales_amount]) 
+
+
+		pre_inv_deduction = SUM(sales_cast[net_invoice_sales_amount])-[gross_sales]
+
+
+
+
+
+	
+
+
+	P & L Values = SWITCH(
+    TRUE(),
+    MAX('P&L'[Order])==1,'P&L'[gross_sales $]/1000000,
+    MAX('P&L'[Order])==2,'P&L'[pre_inv_deduction $]/1000000,
+    MAX('P&L'[Order])==3,'P&L'[net_inv_sales $]/1000000,
+    MAX('P&L'[Order])==4,'P&L'[post_discounts $]/1000000,
+    MAX('P&L'[Order])==5,'P&L'[post_other_disc $]/1000000,
+    MAX('P&L'[Order])==6,'P&L'[Total_Post_Discount $]/1000000,
+    MAX('P&L'[Order])==7,'P&L'[Net Sales $]/1000000,
+    MAX('P&L'[Order])==8,'P&L'[Manufacturing Cost $]/1000000,
+    MAX('P&L'[Order])==9,'P&L'[Freight Cost $]/1000000,
+    MAX('P&L'[Order])==10,'P&L'[Freight Other Cost $]/1000000,
+    MAX('P&L'[Order])==11,'P&L'[Total COGS $]/1000000,
+    MAX('P&L'[Order])==12,'P&L'[Gross Margin $]/1000000,
+    MAX('P&L'[Order])==13,'P&L'[Gross Margin %%],
+    MAX('P&L'[Order])==14,'P&L'[GM/Unit]
+)
+
+
+
+
+
+		previous_year = CALCULATE([P & L Values],
+    SAMEPERIODLASTYEAR(dim_date[date])
+)
+
+
+ 
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
