@@ -24,5 +24,27 @@ step 3
 	 go to git hub
 	create new repository
 	copy and execute in vscode
+
+-------------------------------------------------------------------------
+  		git branch
+
+step 1
+--------
+		create branch with name and date
+
+step 2
+-------
+		do the changes you want to or create any file then save it
+
+step3
+-----
+		go to vscode 
+		add .
+		commit -m "jhb"
+		git push
+		copy and paste the url
+		go to github and refresh it
+
+
  	
 	
